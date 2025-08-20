@@ -1,16 +1,32 @@
-import { useState, useEffect } from "react";
-import SplashScreen from "./components/ui/SplashScreen";
+import { useState } from "react";
+import Sidebar from "./components/Sidebar";
+import Navbar from "./components/Navbar";
 import Dashboard from "./pages/Dashboard";
+import Analytics from "./pages/Analytics";
+import Settings from "./pages/Settings";
+import SplashScreen from "./pages/SplashScreen";
 
-function App() {
-  const [loading, setLoading] = useState(true);
+export default function App() {
+  const [activePage, setActivePage] = useState("Dashboard");
+  const [showSplash, setShowSplash] = useState(true);
 
-  useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 2000);
-    return () => clearTimeout(timer);
-  }, []);
-
-  return loading ? <SplashScreen /> : <Dashboard />;
+  return (
+    <>
+      {showSplash ? (
+        <SplashScreen onFinish={() => setShowSplash(false)} />
+      ) : (
+        <div className="flex h-screen">
+          <Sidebar setActivePage={setActivePage} />
+          <div className="flex-1 flex flex-col bg-gray-100 overflow-auto">
+            <Navbar />
+            <main className="flex-1 p-6">
+              {activePage === "Dashboard" && <Dashboard />}
+              {activePage === "Analytics" && <Analytics />}
+              {activePage === "Settings" && <Settings />}
+            </main>
+          </div>
+        </div>
+      )}
+    </>
+  );
 }
-
-export default App;
